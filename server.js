@@ -25,21 +25,28 @@ app.get('/', (req,res)=>{
     res.send('Hello World!')
 });
 
-app.post('/user', (req,rest)=>{
+app.post('/user', (req,res)=>{
     const newUserRequestObject = req.body;
     console.log('New User:', JSON.stringify(newUserRequestObject));
     redisClient.hSet('users',req.body.email,JSON.stringify(newUserRequestObject));
     res.send('New User'+newUserRequestObject.email+'added');
 });
-app.post('/login', (req,res)=>{
+app.post('/login', async (req,res)=>{
     const loginEmail = req.body.userName;
     console.log(JSON.stringify(req.body));
     console.log('loginEmail', loginEmail);
     const loginPassword = req.body.password;
     console.log('loginPassword', loginPassword);
-    res.sendStatus('Who are you');
+    // res.sendStatus('Who are you');
 
-    if (loginEmail == 'test12@gmail.com' && loginPassword == 'p@ssw0rd'){
+    const userString=await redisClient.hGet('users',loginEmail);
+    const userObject=JSON.parse(userString)
+    if(userString=='' || userString==null){
+        res.status(404);
+        res.send('User not found');
+    }
+
+    else if (loginEmail == userObject.userName && loginPassword == userObject.password){
         const token = uuidv4();
         res.send(token);
     } else{
