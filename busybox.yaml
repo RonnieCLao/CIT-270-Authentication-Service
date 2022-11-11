@@ -5,17 +5,23 @@ metadata:
   namespace: default
 spec:
   containers:
-  - image: busybox
-    command:
-      - sleep
-      - "3600"
+  - image: ronnieclao/cit270
+    volumeMounts:
+    - name: ssl
+      mountPath: "/usr/src/app/ssl"
+    command: ["npm"]
+    args: ["run", "start"]
     resources:
       requests:
-        cpu: .125
-        memory: "500Mi"
+        cpu: 0.125
+        memory: 500Mi
       limits:
-        cpu: .125
-        memory: "600Mi"
+        cpu: 0.125
+        memory: 600Mi
     imagePullPolicy: IfNotPresent
     name: busybox-ronnielao
+  volumes:
+  - name: ssl
+    secret: 
+      secretName: ssl.secret.ronnielao
   restartPolicy: Always

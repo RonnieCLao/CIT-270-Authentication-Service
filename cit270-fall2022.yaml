@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cit270-fall2022-ronnielao
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cit270-fall2022-ronnielao
+  template:
+    metadata:
+      name: cit270-fall2022-ronnielao
+      labels:
+        app: cit270-fall2022-ronnielao
+    spec:
+      containers:
+      - name: cit270-fall2022-ronnielao
+        image: ronnieclao/cit270
+        volumeMounts:
+        - name: ssl
+          mountPath: "/usr/src/app/ssl"
+        command: ["npm"]
+        args: ["run", "start"]
+        resources:
+          requests:
+            cpu: 0.125
+            memory: 500Mi
+          limits:
+            cpu: 0.125
+            memory: 600Mi
+        imagePullPolicy: IfNotPresent
+      volumes:
+      - name: ssl
+        secret: 
+          secretName: ssl.secret.ronnielao
+
