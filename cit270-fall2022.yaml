@@ -29,9 +29,20 @@ spec:
           limits:
             cpu: 0.125
             memory: 600Mi
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
       volumes:
       - name: ssl
         secret: 
           secretName: ssl.secret.ronnielao
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cit270-fall2022-ronnielao-loadbalancer
+spec:
+  selector:
+    app: cit270-fall2022-ronnielao
+  type: LoadBalancer
+  ports:
+  - port: 443
+    targetPort: 443
